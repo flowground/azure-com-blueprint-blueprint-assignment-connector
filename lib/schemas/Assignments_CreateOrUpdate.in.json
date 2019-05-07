@@ -1,0 +1,252 @@
+{
+    "type": "object",
+    "properties": {
+        "scope": {
+            "required": true,
+            "type": "string"
+        },
+        "assignmentName": {
+            "required": true,
+            "type": "string"
+        },
+        "requestBody": {
+            "allOf": [
+                {
+                    "allOf": [
+                        {
+                            "description": "Common properties for all Azure resources.",
+                            "properties": {
+                                "id": {
+                                    "description": "String Id used to locate any resource on Azure.",
+                                    "readOnly": true,
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "description": "Name of this resource.",
+                                    "readOnly": true,
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "description": "Type of this resource.",
+                                    "readOnly": true,
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object",
+                            "x-ms-azure-resource": true
+                        }
+                    ],
+                    "description": "Common properties for all Azure tracked resources.",
+                    "properties": {
+                        "location": {
+                            "description": "The location of this blueprint assignment.",
+                            "type": "string",
+                            "x-ms-mutability": [
+                                "read",
+                                "create"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "location"
+                    ],
+                    "type": "object"
+                }
+            ],
+            "description": "Represents a blueprint assignment.",
+            "properties": {
+                "identity": {
+                    "description": "Managed identity for this blueprint assignment.",
+                    "properties": {
+                        "principalId": {
+                            "description": "Azure Active Directory principal ID associated with this Identity.",
+                            "type": "string"
+                        },
+                        "tenantId": {
+                            "description": "ID of the Azure Active Directory.",
+                            "type": "string"
+                        },
+                        "type": {
+                            "description": "Type of the managed identity.",
+                            "enum": [
+                                "None",
+                                "SystemAssigned",
+                                "UserAssigned"
+                            ],
+                            "type": "string",
+                            "x-ms-enum": {
+                                "modelAsString": true,
+                                "name": "ManagedServiceIdentityType"
+                            }
+                        },
+                        "userAssignedIdentities": {
+                            "additionalProperties": {
+                                "description": "User-assigned managed identity.",
+                                "properties": {
+                                    "clientId": {
+                                        "description": "Client App Id associated with this identity.",
+                                        "type": "string"
+                                    },
+                                    "principalId": {
+                                        "description": "Azure Active Directory principal ID associated with this Identity.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "description": "The list of user-assigned managed identities associated with the resource. Key is the Azure resource Id of the managed identity.",
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "type"
+                    ],
+                    "type": "object"
+                },
+                "properties": {
+                    "description": "Properties for blueprint assignment object.",
+                    "x-ms-client-flatten": true,
+                    "allOf": [
+                        {
+                            "description": "Shared properties between all blueprint resources.",
+                            "properties": {
+                                "description": {
+                                    "description": "Multi-line explain this resource.",
+                                    "maxLength": 500,
+                                    "type": "string"
+                                },
+                                "displayName": {
+                                    "description": "One-liner string explain this resource.",
+                                    "maxLength": 256,
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object",
+                            "x-ms-external": true
+                        }
+                    ],
+                    "properties": {
+                        "blueprintId": {
+                            "description": "ID of the published version of a blueprint definition.",
+                            "type": "string"
+                        },
+                        "locks": {
+                            "description": "Defines how resources deployed by a blueprint assignment are locked.",
+                            "properties": {
+                                "mode": {
+                                    "description": "Lock mode.",
+                                    "enum": [
+                                        "None",
+                                        "AllResourcesReadOnly",
+                                        "AllResourcesDoNotDelete"
+                                    ],
+                                    "type": "string",
+                                    "x-ms-enum": {
+                                        "modelAsString": true,
+                                        "name": "AssignmentLockMode"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "parameters": {
+                            "description": "Blueprint assignment parameter values.",
+                            "additionalProperties": {
+                                "description": "Key/Value pair of parameter fulfillment.",
+                                "properties": {
+                                    "description": {
+                                        "description": "Optional property. Establishes ParameterValueBase as a BaseClass.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "provisioningState": {
+                            "description": "State of the blueprint assignment.",
+                            "enum": [
+                                "creating",
+                                "validating",
+                                "waiting",
+                                "deploying",
+                                "cancelling",
+                                "locking",
+                                "succeeded",
+                                "failed",
+                                "canceled",
+                                "deleting"
+                            ],
+                            "readOnly": true,
+                            "type": "string",
+                            "x-ms-enum": {
+                                "modelAsString": true,
+                                "name": "AssignmentProvisioningState"
+                            }
+                        },
+                        "resourceGroups": {
+                            "description": "Names and locations of resource group placeholders.",
+                            "additionalProperties": {
+                                "description": "Represents an Azure resource group.",
+                                "properties": {
+                                    "location": {
+                                        "description": "Location of the resource group.",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Name of the resource group.",
+                                        "maxLength": 90,
+                                        "minLength": 1,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "status": {
+                            "description": "Status of blueprint assignment. This field is readonly.",
+                            "readOnly": true,
+                            "allOf": [
+                                {
+                                    "description": "Shared status properties between all blueprint resources.",
+                                    "properties": {
+                                        "lastModified": {
+                                            "description": "Last modified time of this blueprint definition.",
+                                            "readOnly": true,
+                                            "type": "string"
+                                        },
+                                        "timeCreated": {
+                                            "description": "Creation time of this blueprint definition.",
+                                            "readOnly": true,
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            ],
+                            "properties": {},
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "parameters",
+                        "resourceGroups"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "identity",
+                "properties"
+            ],
+            "type": "object"
+        },
+        "api_version": {
+            "required": true,
+            "type": "string"
+        }
+    }
+}
